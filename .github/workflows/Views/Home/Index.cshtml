@@ -1,0 +1,178 @@
+﻿@model pruebaCovid.Models.ViewModel.VMInformation
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@*https://github.com/03jose/puebaCovid.git*@
+
+<input type="hidden" value="@Url.Action("GetRegionOrProvince","home")" id="refreshSelect" />
+<input type="hidden" value="@Url.Action("ExportDoc", "export")" id="exportDoc" />
+<input type="hidden" value="@Url.Action("SaveRegion", "home" )" id="SaveRegion" />
+<input type="hidden" value="@Url.Action("SaveProvince", "home")" id="SaveProvince" />
+<input type="hidden" value="@Url.Action("GetRegion", "home")" id="GetRegion" />
+<input type="hidden" value="@Url.Action("GetProvince", "home")" id="GetProvince" />
+
+<div class="row">
+    <div class="col-md-4">
+       <input type="button" class="btn btn-success" id="createRegion" value="Create or Edit Region" data-toggle="modal" data-target="#modalRegion"  title="Regions" />
+        <input type="button" class="btn" id="createProvince" value="Create or Edit Province" data-toggle="modal" data-target="#modalProvince"  title="Province"/>
+    </div>
+       
+</div>
+
+
+
+<div class="row" style="margin-top: 1%;">
+    <form>
+        <div class="col-md-6">
+            <div class="col-md-6" style="padding-left: 0px !important;
+    padding-right: 0px;">
+            <select id="options" class="form-control">
+                @foreach (var option in Model.lstRegion)
+                {
+                    <option value="@option.RegionId">@option.Name</option>
+                }
+            </select>
+                </div>
+            <div class="col-md-6">
+                <input type="button" class="btn btn-default" id="report" value="Report" />
+            </div>
+            </div>
+        @*<div class="col-md-4">
+
+            </div>*@
+        <div class="col-md-6">
+            <input type="button" class="btn btn-default export pull-right" onclick="fnExport('csv')" id="csv" value="CSV" />
+            <input type="button" class="btn btn-default export pull-right" onclick="fnExport('json')" id="json" value="JSON" />
+            <input type="button" class="btn btn-default export pull-right" onclick="fnExport('xml')" id="xml" value="XML" />
+        </div>
+    </form>
+</div>
+
+<div class="row" style="margin-top: 1%;">
+    <div class="col-md-12">
+        <div><b>TOP 10 COVID CASES </b><br /></div>
+        <table id="TableInformation" class="table table-bordered table-responsive table-hover">
+            <tr>
+                @if (Model.region == 0)
+                {
+                    <th>REGION </th>
+                }
+                else
+                {
+                    <th>PROVINCE </th>
+                }
+                <th>CASES </th>
+                <th>DEATHS </th>
+               
+            </tr>
+            @foreach (var d in Model.lstTable)
+            {
+                <tr>
+                    <td>@d.ProvName</td>
+                    <td>@d.Cases</td>
+                    <td>@d.Deaths</td>
+                </tr>
+            }
+        </table>  
+    </div>
+</div>
+
+
+<div id="modalRegion" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title" id="TitleRegion" style="text-align: center;">
+                    Create or Edit Region
+                </h4>
+            </div>
+            <div class="modal-body" style="overflow-y: scroll;height: 70vh;">
+                <select id="modalRegionSelect" class="form-control">
+                    @foreach (var option in Model.lstRegion)
+                    {
+                        <option value="@option.RegionId">@option.Name</option>
+                    }
+                </select>
+                <div id="RegionInfo2">
+                    <div class="col-md-12">
+                        <label>Region Name:</label>
+                        <input type="text" required class="form-control" id="regionName" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" id="btnSaveRegion" style="background-color:#2e6da4">
+                    <i class="fa fa-floppy-o"></i> Save information
+                </button>
+              
+                <button type="button" class="btn btn-danger" id="closeModalDeleteClause" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modalProvince" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title" id="TitleProvince" style="text-align: center;">
+                    Create or edit Province
+                </h4>
+            </div>
+            <div class="modal-body" style="overflow-y: scroll;height: 70vh;">
+               
+                <div id="Info2">
+                    <div class="col-md-12">
+                        <label>Regions</label>
+                        <select id="modalRegion2Select" required class="form-control">
+                            @foreach (var option in Model.lstRegion)
+                            {
+                                <option value="@option.RegionId">@option.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Provinces</label>
+                        <select id="modalProvinceSelect" required class="form-control">
+                            @foreach (var option in Model.lstProvince)
+                            {
+                            <option value="@option.ProvinceId">@option.ProvName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label >Province:</label>
+                        <input type="text" required id="provinceName" class="form-control" />
+                    </div>
+                    <div class="col-md-12">
+                        <label >Cases:</label>
+                        <input type="number" min="0" required id="cases" class="form-control" />
+                    </div>
+                    <div class="col-md-12">
+                        <label >Deaths:</label>
+                        <input type="number" min="0" required id="death" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" id="btnSaveProvince" style="background-color:#2e6da4">
+                    <i class="fa fa-floppy-o"></i> Save information
+                </button>
+                
+                <button type="button" class="btn btn-danger" id="closeModalProvince" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
