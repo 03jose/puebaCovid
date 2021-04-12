@@ -137,7 +137,7 @@ namespace pruebaCovid.Controllers
                 if (region == 0)
                 {
                     lstregions = db.Regions.ToList();
-                    lstTable = db.Provinces.GroupBy(l => l.RegionId)
+                    lstTable = db.Provinces.GroupBy(l => l.RegionId).ToList()
                         .Select(x => new Provinces()
                         {
                             Cases = x.Sum(y => y.Cases),

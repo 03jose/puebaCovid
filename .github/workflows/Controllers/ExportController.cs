@@ -100,7 +100,7 @@ namespace pruebaCovid.Controllers
                 List<DataToExport> lstTable = new List<DataToExport>();
                 if (region == 0)
                 {
-                    lstTable = db.Provinces.GroupBy(l => l.RegionId)
+                    lstTable = db.Provinces.GroupBy(l => l.RegionId).ToList()
                         .Select(x => new DataToExport()
                         {
                             Cases = x.Sum(y => y.Cases).ToString(),
@@ -118,7 +118,7 @@ namespace pruebaCovid.Controllers
                 }
                 else
                 {
-                    lstTable = db.Provinces.Where(x => x.RegionId == region)
+                    lstTable = db.Provinces.Where(x => x.RegionId == region).ToList()
                         .OrderByDescending(x => x.Cases).Take(10)
                         .Select(x => new DataToExport()
                         {
